@@ -1,8 +1,8 @@
-# A framework for mapping text embeddings into a target vision latent space using ensemble adapter architectures
+# Cross-Modal Latent Alignment: Bridging Text and Vision Spaces
 
 ## Project Overview
 
-This repository contains the solution for a machine learning competition on Kaggle. The main objective is to build a robust **adapter** that maps text embeddings from a pre-trained text encoder into a target vision latent space. The goal is for these mapped text embeddings to match the ground-truth image embeddings produced by a provided pre-trained VAE.
+This project explores different adapter architectures for mapping text embeddings (RoBERTa) into a visual latent space (DINOv2). Developed in the context of a Kaggle challenge, the framework implements advanced alignment techniques such as Procrustes analysis and residual architectures.
 
 The model is trained on a given dataset and must generalise to a held-out test set.
 
