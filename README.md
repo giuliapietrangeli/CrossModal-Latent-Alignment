@@ -1,39 +1,51 @@
-# Cross-Modal Latent Alignment: Bridging Text and Vision Spaces
+# Cross-Modal Latent Alignment: Text-to-Vision Embedding Mapping
 
-## Project Overview
+This repository provides a comprehensive pipeline for aligning disparate latent spaces in cross-modal retrieval tasks. The primary objective is to map 1024-dimensional text embeddings (RoBERTa) into a 1536-dimensional target vision latent space (DINOv2).
 
-This project explores different adapter architectures for mapping text embeddings (RoBERTa) into a visual latent space (DINOv2). Developed in the context of a Kaggle challenge, the framework implements advanced alignment techniques such as Procrustes analysis and residual architectures.
+The framework implements multiple adapter architectures and optimization strategies to ensure high-fidelity mapping and robust retrieval performance.
 
-The model is trained on a given dataset and must generalise to a held-out test set.
+## Technical Methodology
+
+The project explores three distinct neural architectures designed to handle the complexity of cross-modal translation:
+
+### 1. RMLPA (Residual Bottleneck Adapter)
+A residual neural network utilizing a bottleneck design (ratio D_in/4) to learn non-linear mappings while preserving gradient flow through shortcut connections.
+
+### 2. LatentMapper (Linear Projection)
+A streamlined linear layer that leverages Orthogonal Procrustes Analysis for weight initialization. By computing the optimal rotation between source and target distributions on the training set, this model achieves rapid convergence and high baseline accuracy.
+
+### 3. Stitcher (Parallel Path Adapter)
+A hybrid architecture that fuses the outputs of a direct linear projection and a deep, non-linear MLP path, allowing the model to capture both global alignment and local semantic nuances.
+
+## Optimization and Loss Functions
+
+Models are trained using state-of-the-art loss functions tailored for retrieval:
+* **Symmetric InfoNCE Loss**: Implemented with a learnable temperature parameter to maximize mutual information between modalities.
+* **Triplet Margin Loss**: Utilized with in-batch hard negative mining (margin m=0.2) to refine the decision boundaries in the embedding space.
+
+## Repository Structure
+
+* `models/`: Core adapter architectures and model-specific logic (e.g., `utils_mlp.py`, `utils_rmlpa.py`, `utils_stitcher.py`).
+* `utils/`: Support utilities, including hyperparameter tuning (`utils_tuning.py`) and shared validation metrics.
+* `checkpoints/`: Optimized model weights (.pth) for the RMLPA, LatentMapper, and Stitcher architectures.
+* `Technical_Report.pdf`: Documentation detailing the experimental setup, hyperparameter tuning, and comparative analysis.
+* `main_pipeline.ipynb`: The primary execution environment for training, validation, and inference.
+
+## Performance and Results
+
+The implemented ensembling strategy—calculated via a weighted average of L2-normalized outputs—reaches an internal Mean Reciprocal Rank (MRR) of 0.88. This demonstrates the effectiveness of combining diverse loss functions and architectures to reduce uncorrelated errors.
+
+## Requirements
+
+* Python 3.8+
+* PyTorch
+* Scikit-learn
+* SciPy
+* Pandas/NumPy
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
-
-The code in this repository implements three different model architectures (**MLP**, **RMLPA**, and **Stitcher**) and an **ensembling** strategy to achieve this goal.
-
-## Repository Guide
-
-Below is a brief description of the main folders and files and their purpose.
-
-### Main Folders
-
-* `/checkpoints`:
-    Contains the `.pth` files for the final trained models (the "best models") for each of the three architectures (`final_latent_mapper.pth`, `rmlpa_best_model.pth`, `stitcher_best_model.pth`). These are loaded for inference and submission generation.
-
-* `/submission`:
-    This crucial folder contains all the outputs required for ensembling and the final submissions.
-    * **Final Submissions**: `submission_ensemble_2model.csv` and `submission_ensemble_3model.csv`.
-    
-    While running code on Kaggle you should be able to find also:
-    * **Single Model Embeddings**: Contains the raw predictions from each model, saved in both `.csv` format (for direct submission) and `.npz` format (optimized for ensembling).
-    * **Ensemble Support Files**: Includes intermediate `.npz` files (e.g., `val_mlp.npz`, `val_rmlpa.npz`, `val_stiticher.npz`, `gallery_data.npz`) that contain pre-calculated validation or gallery data, essential for building the final ensembles in the notebook.
-
-### Main Files
-
-* `utils_*.py`:
-    These represent the "brain" of the entire pipeline. These scripts contain all the logic, model class definitions, training functions, validation utilities (like the MRR calculation), and functions to generate single-model submissions (e.g., `generate_dml_submission` in `utils_mlp.py`).
-
-* `final-notebook-lilo-and-stitching.ipynb`:
-    This is the Jupyter notebook that orchestrates the entire process. It loads the "best models" from the `/checkpoints` folder if the flags to re-run the training are false, runs training in the other case, then it generates predictions for the ensemble (using the logic defined in the `utils` files), and finally performs the "stitching" (ensembling) phase by combining the various `.npz` files to produce the final submissions.
-
-* `Report_Lilo_and_Stitching.pdf`:
-    The file containing the final project report, which describes in detail the approach, model architectures, tuning process, and the results achieved.
+*Developed as part of the AML Challenge 2025.*
