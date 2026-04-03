@@ -1,4 +1,4 @@
-# Lilo and Stitching: Embedding Mapping and Ensembling
+# A framework for mapping text embeddings into a target vision latent space using ensemble adapter architectures.
 
 ## Project Overview
 
