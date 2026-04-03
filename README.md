@@ -1,8 +1,8 @@
-# A framework for mapping text embeddings into a target vision latent space using ensemble adapter architectures.
+# A framework for mapping text embeddings into a target vision latent space using ensemble adapter architectures
 
 ## Project Overview
 
-This repository contains the solution for a machine learning competition. The main objective is to build a robust **adapter** that maps text embeddings from a pre-trained text encoder into a target vision latent space. The goal is for these mapped text embeddings to match the ground-truth image embeddings produced by a provided pre-trained VAE.
+This repository contains the solution for a machine learning competition on Kaggle. The main objective is to build a robust **adapter** that maps text embeddings from a pre-trained text encoder into a target vision latent space. The goal is for these mapped text embeddings to match the ground-truth image embeddings produced by a provided pre-trained VAE.
 
 The model is trained on a given dataset and must generalise to a held-out test set.
 
